@@ -44,9 +44,35 @@ document.querySelector('#exec').addEventListener('click', function () {
                 } else if (e.currentTarget.textContent === '?') {
                     if (dataset[line][blank] === 0) {
                         e.currentTarget.textContent = '';
-                    }else if (dataset[line][blank] === 'X') {
+                    } else if (dataset[line][blank] === 'X') {
                         e.currentTarget.textContent = 'X';
                     }
+                }
+            });
+            td.addEventListener('click', function (e) {
+                var parentTr = e.currentTarget.parentNode; // contextmenu가 발생하는 태그
+                var parentTbody = e.currentTarget.parentNode.parentNode;
+                var blank = Array.prototype.indexOf.call(parentTr.children, e.currentTarget);
+                var line = Array.prototype.indexOf.call(parentTbody.children, parentTr);
+                if (dataset[line][blank] === 'X') {
+                    e.currentTarget.textContent = '펑';
+                } else {
+                    var around = [
+                        dataset[line][blank - 1], dataset[line][blank + 1],
+                    ];
+                    // 각각 if문의 문법은 다르지만 같은 역할은 한다. 각각의 역할은 따로 공부해보자
+                    if (dataset[line - 1]) {
+                        around.push(dataset[line - 1][blank - 1]);
+                        around.push(dataset[line - 1][blank]);
+                        around.push(dataset[line - 1][blank + 1]);
+                    }
+                    if (dataset[line + 1]) {
+                        around = around.concat(
+                            dataset[line + 1][blank - 1], dataset[line + 1][blank], dataset[line + 1][blank + 1]);
+                    }
+                    e.currentTarget.textContent = around.filter(function (v) { // fileter함수 -> 배열에서 필터링해줌
+                        return v === 'X';
+                    }).length;
                 }
             });
             tr.appendChild(td);
